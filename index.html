@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Highlighter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: white;
+            color: black;
+        }
+        #password {
+            width: 80%;
+            padding: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        #output {
+            font-size: 24px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .lowercase { color: green; }
+        .uppercase { color: blue; }
+        .number { color: red; }
+        .special { color: orange; }
+        .legend {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .legend span {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .color-picker {
+            margin-top: 20px;
+        }
+        .stats {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: gray;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1b1b1b;
+                color: white;
+            }
+            footer {
+                color: lightgray;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Password Highlighter</h1>
+    <input type="text" id="password" placeholder="Enter password here" oninput="highlightPassword()">
+    <div id="output"></div>
+
+    <div class="legend">
+        <p><span id="lowercaseLegend" style="color: #008000;">● Lowercase letters (<span id="lowercaseColor">#008000</span>)</span></p>
+        <p><span id="uppercaseLegend" style="color: #0000FF;">● Uppercase letters (<span id="uppercaseColor">#0000FF</span>)</span></p>
+        <p><span id="numberLegend" style="color: #FF0000;">● Numbers (<span id="numberColor">#FF0000</span>)</span></p>
+        <p><span id="specialLegend" style="color: #FFA500;">● Special characters (<span id="specialColor">#FFA500</span>)</span></p>
+    </div>
+
+    <div class="color-picker">
+        <label>Lowercase Color: <input type="color" id="lowercasePicker" value="#008000" onchange="updateColors()"></label>
+        <label>Uppercase Color: <input type="color" id="uppercasePicker" value="#0000FF" onchange="updateColors()"></label>
+        <label>Number Color: <input type="color" id="numberPicker" value="#FF0000" onchange="updateColors()"></label>
+        <label>Special Color: <input type="color" id="specialPicker" value="#FFA500" onchange="updateColors()"></label>
+    </div>
+
+    <div class="stats">
+        <p>Password Length: <span id="length">0</span></p>
+        <p>Lowercase Letters: <span id="lowercaseCount">0</span></p>
+        <p>Uppercase Letters: <span id="uppercaseCount">0</span></p>
+        <p>Numbers: <span id="numberCount">0</span></p>
+        <p>Special Characters: <span id="specialCount">0</span></p>
+    </div>
+
+    <footer>
+        <p>Made by <a href="https://github.com/simont456">SimonT456</a> | <a href="https://github.com/simont456/password-highlighter">GitHub</a> | Passwords are processed locally and never sent to a server</p>
+    </footer>
+
+    <script>
+        function highlightPassword() {
+            const input = document.getElementById("password").value;
+            const output = document.getElementById("output");
+            output.innerHTML = "";
+
+            let lowercaseCount = 0;
+            let uppercaseCount = 0;
+            let numberCount = 0;
+            let specialCount = 0;
+
+            for (let char of input) {
+                let span = document.createElement("span");
+                span.textContent = char;
+
+                if (char.match(/[a-z]/)) {
+                    span.style.color = document.getElementById("lowercasePicker").value;
+                    lowercaseCount++;
+                } else if (char.match(/[A-Z]/)) {
+                    span.style.color = document.getElementById("uppercasePicker").value;
+                    uppercaseCount++;
+                } else if (char.match(/[0-9]/)) {
+                    span.style.color = document.getElementById("numberPicker").value;
+                    numberCount++;
+                } else {
+                    span.style.color = document.getElementById("specialPicker").value;
+                    specialCount++;
+                }
+
+                output.appendChild(span);
+            }
+
+            document.getElementById("length").textContent = input.length;
+            document.getElementById("lowercaseCount").textContent = lowercaseCount;
+            document.getElementById("uppercaseCount").textContent = uppercaseCount;
+            document.getElementById("numberCount").textContent = numberCount;
+            document.getElementById("specialCount").textContent = specialCount;
+        }
+
+        function updateColors() {
+            const lowercaseColor = document.getElementById("lowercasePicker").value;
+            const uppercaseColor = document.getElementById("uppercasePicker").value;
+            const numberColor = document.getElementById("numberPicker").value;
+            const specialColor = document.getElementById("specialPicker").value;
+
+            document.getElementById("lowercaseColor").textContent = lowercaseColor;
+            document.getElementById("uppercaseColor").textContent = uppercaseColor;
+            document.getElementById("numberColor").textContent = numberColor;
+            document.getElementById("specialColor").textContent = specialColor;
+
+            document.getElementById("lowercaseLegend").style.color = lowercaseColor;
+            document.getElementById("uppercaseLegend").style.color = uppercaseColor;
+            document.getElementById("numberLegend").style.color = numberColor;
+            document.getElementById("specialLegend").style.color = specialColor;
+
+            highlightPassword();
+        }
+
+        // Initialize the legend with default colors
+        updateColors();
+    </script>
+</body>
+</html>
